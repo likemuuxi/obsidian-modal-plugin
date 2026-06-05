@@ -1995,10 +1995,15 @@ export default class ModalOpenerPlugin extends Plugin {
             input.select();
 
             let select: HTMLSelectElement;
-            if (fileType == "md") {
+            const showEmbedSelect = fileType === "md" || fileType === "canvas" || fileType === "base";
+            const isEmbedByDefault = fileType === "canvas" || fileType === "base";
+            if (showEmbedSelect) {
                 select = inputContainer.createEl("select", { cls: 'new-file-select' });
                 select.createEl("option", { text: t("Wiki link"), value: "wikilink" });
-                select.createEl("option", { text: t("Embed link"), value: "embed" });
+                const embedOption = select.createEl("option", { text: t("Embed link"), value: "embed" });
+                if (isEmbedByDefault) {
+                    embedOption.selected = true;
+                }
             }
 
             const buttonContainer = container.createDiv({ cls: 'new-file-button-container' });
@@ -2017,7 +2022,7 @@ export default class ModalOpenerPlugin extends Plugin {
                 if (fileName) {
                     resolve({
                         fileName: fileName,
-                        isEmbed: select ? select.value === "embed" : true
+                        isEmbed: select ? select.value === "embed" : isEmbedByDefault
                     });
                     modal.close();
                 }
