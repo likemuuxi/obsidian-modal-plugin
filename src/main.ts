@@ -1054,6 +1054,11 @@ export default class ModalOpenerPlugin extends Plugin {
             // 'svg',
         ]);
 
+        // 支持Excalidraw嵌入的SVG内部点击
+        if (element.tagName === 'image' && element.closest('.excalidraw-embedded-img')) {
+            return true;
+        }
+
         return Array.from(element.classList).some(cls => previewClasses.has(cls) || cls.startsWith('excalidraw-svg'));
     }
 
@@ -1207,8 +1212,8 @@ export default class ModalOpenerPlugin extends Plugin {
             return target.getAttribute("data-smm-file") || '';
         }
 
-        // 适配新版 obsidian 图片点击事件
-        if (target.tagName === 'IMG' && target.closest('.image-wrapper')) {
+        // 适配新版 obsidian 图片点击事件（支持 .image-wrapper 和 span.internal-embed）
+        if (target.tagName === 'IMG' && (target.closest('.image-wrapper') || target.closest('span.internal-embed'))) {
             const internalEmbed = target.closest('.internal-embed');
             if (internalEmbed) {
                 return internalEmbed.getAttribute('src') || '';
