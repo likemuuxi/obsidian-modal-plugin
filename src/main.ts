@@ -964,11 +964,11 @@ export default class ModalOpenerPlugin extends Plugin {
             return true;
         }
 
-        if (element.tagName === 'A' && (element.classList.contains('external-link') || element.classList.contains('internal-link'))) {
+        if (element.tagName === 'SPAN' && element.classList.contains('internal-link')) {
             return true;
         }
 
-        if (element.tagName === 'SPAN' && element.classList.contains('internal-link')) {
+        if (element.closest('a.external-link, a.internal-link')) {
             return true;
         }
 
@@ -1099,20 +1099,12 @@ export default class ModalOpenerPlugin extends Plugin {
             }
         }
 
-        let linkElement = target.closest('a');
-        if (linkElement) {
-            const closestList = ['.ge-grid-item', '.def-decoration'];
-            const parentClass = closestList.find(selector => linkElement?.closest(selector));
-            if (parentClass) {
-                const closestElement = linkElement.closest(parentClass);
-                if (!closestElement) return;  // 避免 null 访问 classList
-
-                if (closestElement.classList.contains('def-decoration')) {
-                    const tooltipLink = target ? target.closest('a[data-tooltip-position]') as HTMLElement : null;
-                    if (tooltipLink) {
-                        target = tooltipLink;
-                      }
-                }
+        // 支持链接内嵌套结构：点击落在 <a> 内但 target 不是 <a> 本身时，重定向到外层 <a>
+        // （Note Definition 等插件会把链接文本包裹在额外 <span> 中）
+        if (target.tagName !== 'A') {
+            const anchor = target.closest('a.external-link, a.internal-link') as HTMLElement | null;
+            if (anchor) {
+                target = anchor;
             }
         }
 
