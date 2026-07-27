@@ -3,6 +3,7 @@ import { t } from "./lang/helpers"
 import { ModalWindow } from "./modal";
 import ModalOpenerSettingTab from "./settings";
 import { DEFAULT_SETTINGS, ModalOpenerPluginSettings, } from "./settings";
+import darkReaderInjectSource from "darkreader:inject-src";
 
 
 export type RealLifeWorkspaceLeaf = WorkspaceLeaf & {
@@ -2307,32 +2308,21 @@ export default class ModalOpenerPlugin extends Plugin {
             const isDarkMode = document.body.classList.contains('theme-dark');
             if (isDarkMode) {
                 try {
+                    // Inject the bundled Dark Reader source (no <script> element,
+                    // no remote/CDN loading). This defines window.DarkReader.
+                    await webContents.executeJavaScript(darkReaderInjectSource);
                     await webContents.executeJavaScript(`
-						const element = document.createElement('script');
-
-						fetch('https://cdn.jsdelivr.net/npm/darkreader/darkreader.min.js')
-							.then((response) => {
-								element.src = response.url;
-								document.body.appendChild(element);
-							})
-							.catch((error) => {
-								console.error('Error loading the script:', error);
+						try {
+							DarkReader?.setFetchMethod(window.fetch);
+							DarkReader?.enable({
+								brightness: 100,
+								contrast: 90,
+								sepia: 10
 							});
-
-						element.onload = () => {
-							try {
-								DarkReader?.setFetchMethod(window.fetch);
-								DarkReader?.enable({
-									brightness: 100,
-									contrast: 90,
-									sepia: 10
-								});
-								console.log(DarkReader);
-							} catch (err) {
-								window.myPostPort?.postMessage('darkreader-failed');
-								console.error('Failed to load dark reader: ', err);
-							}
-						};
+						} catch (err) {
+							window.myPostPort?.postMessage('darkreader-failed');
+							console.error('Failed to load dark reader: ', err);
+						}
 					`);
                 } catch (e) {
                     console.error(e);
@@ -2340,7 +2330,7 @@ export default class ModalOpenerPlugin extends Plugin {
             } else {
                 try {
                     await webContents.executeJavaScript(`
-                        if (DarkReader) {
+                        if (typeof DarkReader !== 'undefined' && DarkReader) {
                             DarkReader.disable();
                             console.log('Dark mode disabled');
                         }
@@ -2353,7 +2343,6 @@ export default class ModalOpenerPlugin extends Plugin {
             console.error("Failed to get background color: ", err);
         }
 
-        // https://cdn.jsdelivr.net/npm/darkreader/darkreader.min.js
         webContents.executeJavaScript(`
 			window.addEventListener('mouseover', (e) => {
 				if(!e.target) return;
@@ -2365,26 +2354,6 @@ export default class ModalOpenerPlugin extends Plugin {
 			});
 		`);
     }
-
-    // async registerImmersiveTranslation(webContents: any) {
-    //     // 注入沉浸式翻译 SDK
-    //     await webContents.executeJavaScript(`
-    //         // 1. 设置初始化参数
-    //         window.immersiveTranslateConfig = {
-    //             isAutoTranslate: false,
-    //             pageRule: {
-    //                 // 排除不需要翻译的元素
-    //                 excludeSelectors: ["pre", "code", "nav", "footer"],
-    //             }
-    //         };
-
-    //         // 2. 加载沉浸式翻译 SDK
-    //         const script = document.createElement('script');
-    //         script.async = true;
-    //         script.src = 'https://download.immersivetranslate.com/immersive-translate-sdk-lite-latest.js';
-    //         document.head.appendChild(script);
-    //     `);
-    // }
 
     public getPlugin(pluginId: string) {
         const app = this.app as any;
