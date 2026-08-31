@@ -1127,7 +1127,7 @@ export class ModalWindow extends Modal {
         const headings = metadata?.headings || [];
     
         // 添加目录标题
-        tocContainer.createEl('div', { cls: 'toc-header', text: '目录' });
+        tocContainer.createEl('div', { cls: 'toc-header', text: t('Table of contents') });
         
         // 生成目录内容
         this.renderTocContent(tocContainer, headings);
@@ -1163,7 +1163,7 @@ export class ModalWindow extends Modal {
     
     private renderTocContent(container: HTMLElement, headings: any[]) {
         if (!headings.length) {
-            container.createEl('div', { cls: 'toc-empty', text: 'No headings found' });
+            container.createEl('div', { cls: 'toc-empty', text: t('No headings found') });
             return;
         }
     

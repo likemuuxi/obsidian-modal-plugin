@@ -1,4 +1,4 @@
-import { Plugin, Menu, getLanguage, TAbstractFile, Notice, TFile, TFolder, MenuItem, Editor, MarkdownView, normalizePath, Modal, EditorPosition, WorkspaceLeaf, Platform } from "obsidian";
+import { Plugin, Menu, TAbstractFile, Notice, TFile, TFolder, MenuItem, Editor, MarkdownView, normalizePath, Modal, EditorPosition, WorkspaceLeaf, Platform } from "obsidian";
 import { t } from "./lang/helpers"
 import { ModalWindow } from "./modal";
 import ModalOpenerSettingTab from "./settings";
@@ -557,8 +557,7 @@ export default class ModalOpenerPlugin extends Plugin {
                     const filePath = activeFile?.path || "";
                     const parentFolder = this.app.fileManager.getNewFileParent(filePath);
 
-                    const lang = getLanguage();
-                    const baseName = lang.startsWith("zh") ? "未命名思维导图" : "untitled mindmap";
+                    const baseName = t('untitled mindmap');
                     const sourcePath = this.app.workspace.getActiveFile()?.path || "";
                     const folder = this.app.fileManager.getNewFileParent(sourcePath, `${baseName}.md`);
                     const availableFileName = await this.getAvailableFileName(baseName, "md", folder.path);
@@ -1767,8 +1766,7 @@ export default class ModalOpenerPlugin extends Plugin {
                                 const filePath = activeFile?.path || "";
                                 const parentFolder = this.app.fileManager.getNewFileParent(filePath);
                                 
-                                const lang = getLanguage();
-                                const baseName = lang.startsWith("zh") ? "未命名思维导图" : "untitled mindmap";
+                                const baseName = t('untitled mindmap');
                                 const sourcePath = this.app.workspace.getActiveFile()?.path || "";
                                 const folder = this.app.fileManager.getNewFileParent(sourcePath, `${baseName}.md`);
                                 const availableFileName = await this.getAvailableFileName(baseName, "md", folder.path);
@@ -1970,8 +1968,7 @@ export default class ModalOpenerPlugin extends Plugin {
         const activeView = this.app.workspace.getActiveViewOfType(MarkdownView);
         const selectedText = activeView?.editor?.getSelection() || '';
 
-        const lang = getLanguage();
-        const baseName = lang.startsWith("zh") ? "未命名" : "untitled";
+        const baseName = t('untitled');
         const sourcePath = this.app.workspace.getActiveFile()?.path || "";
         const folder = this.app.fileManager.getNewFileParent(sourcePath, `${baseName}.${fileType}`);
         const availableFileName = await this.getAvailableFileName(baseName, fileType, folder.path);
@@ -2057,7 +2054,7 @@ export default class ModalOpenerPlugin extends Plugin {
             const input = inputContainer.createEl("input", {
                 type: "text",
                 value: "",
-                placeholder: "untitled code file",
+                placeholder: t('untitled code file'),
                 cls: "new-file-input"
             });
             input.focus();

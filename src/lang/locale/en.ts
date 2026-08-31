@@ -7,6 +7,12 @@ export default {
   'No link found at cursor position': 'No link found at cursor position',
 
   'Toggle table of contents': 'Toggle table of contents',
+  'Table of contents': 'Table of contents',
+  'No headings found': 'No headings found',
+
+  'untitled': 'untitled',
+  'untitled mindmap': 'untitled mindmap',
+  'untitled code file': 'untitled code file',
 
   'Create and edit in modal': 'Create and edit in modal',
   'Enter new file name': 'Enter new file name: ',

@@ -7,6 +7,12 @@ export default {
     'No link found at cursor position': '在光标位置找不到链接',
 
     'Toggle table of contents': '显示目录',
+    'Table of contents': '目录',
+    'No headings found': '没有找到标题',
+
+    'untitled': '未命名',
+    'untitled mindmap': '未命名思维导图',
+    'untitled code file': '未命名代码文件',
 
     'Create and edit in modal': '创建并在模态窗口中编辑',
     'Enter new file name': '输入新文件名：',
