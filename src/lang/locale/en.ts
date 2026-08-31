@@ -7,7 +7,7 @@ export default {
   'No link found at cursor position': 'No link found at cursor position',
 
   'Toggle table of contents': 'Toggle table of contents',
-  'Table of contents': 'Table of contents',
+  'Table of contents': 'Toc',
   'No headings found': 'No headings found',
 
   'untitled': 'untitled',
